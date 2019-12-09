@@ -19,7 +19,18 @@ public class ConceptoDescuentoDAOImpl implements IConceptoDescuentoDAO {
     @Override
     public List<conceptoDescuento> getAllConceptoDescuentoById(String codigo) {
         //String sql =  "select distinct id_programa_ciclo,d.id_concepto,d.concepto,d.descripcion_min,b.credito,b.importe,fn_getbeneficio(c.cod_alumno,c.id_programa) as \"descuento(%)\",((100 - fn_getbeneficio(c.cod_alumno,c.id_programa))/100)*b.importe as importe_final, b.cuotas from programa_presupuesto a inner join programa_presupuesto_det b on a.id_programa_presupuesto=b.id_programa_presupuesto inner join alumno_programa c on a.id_programa_presupuesto=c.id_programa_presupuesto inner join concepto d on b.id_concepto=d.id_concepto where c.cod_alumno=? and c.id_programa=8 order by id_programa_ciclo,descripcion_min;";
-        String sql =  "select distinct id_programa_ciclo,d.id_concepto,d.concepto,d.descripcion_min,b.credito,b.importe,fn_getbeneficio(c.cod_alumno,c.id_programa) as \"descuento(%)\",((100 - fn_getbeneficio(c.cod_alumno,c.id_programa))/100)*b.importe as importe_final, b.cuotas from programa_presupuesto a inner join programa_presupuesto_det b on a.id_programa_presupuesto=b.id_programa_presupuesto inner join alumno_programa c on a.id_programa_presupuesto=c.id_programa_presupuesto inner join concepto d on b.id_concepto=d.id_concepto where c.cod_alumno=? order by id_programa_ciclo,descripcion_min;";
+        //String sql =  "select distinct id_programa_ciclo,d.id_concepto,d.concepto,d.descripcion_min,b.credito,b.importe,fn_getbeneficio(c.cod_alumno,c.id_programa) as \"descuento(%)\",((100 - fn_getbeneficio(c.cod_alumno,c.id_programa))/100)*b.importe as importe_final, b.cuotas from programa_presupuesto a inner join programa_presupuesto_det b on a.id_programa_presupuesto=b.id_programa_presupuesto inner join alumno_programa c on a.id_programa_presupuesto=c.id_programa_presupuesto inner join concepto d on b.id_concepto=d.id_concepto where c.cod_alumno=? order by id_programa_ciclo,descripcion_min;";
+        String sql =  "select distinct id_programa_ciclo,d.id_concepto,d.concepto,";
+               sql+=  "d.descripcion_min,b.credito,b.importe,";
+               sql+=  "fn_getbeneficio(c.cod_alumno,c.id_programa) as \"descuento(%)\",";
+               sql+=  "((100 - fn_getbeneficio(c.cod_alumno,c.id_programa))/100)*b.importe as importe_final,";
+               sql+=  " b.cuotas ";
+               sql+=  "from programa_presupuesto a inner join programa_presupuesto_det b ";
+               sql+=  "on a.id_programa_presupuesto=b.id_programa_presupuesto ";
+               sql+=  "inner join alumno_programa c on a.id_programa_presupuesto=c.id_programa_presupuesto";
+               sql+=  " inner join concepto d on b.id_concepto=d.id_concepto ";
+               sql+=  "where c.cod_alumno in (select cod_alumno ";
+               sql+=  "from matricula_hist where cod_alumno = ? ) order by id_programa_ciclo,descripcion_min;";
       
         RowMapper<conceptoDescuento> rowMapper = new ConceptoDescuentoRowMapper();
         return this.jdbcTemplate.query(sql, rowMapper, codigo);
